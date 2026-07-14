@@ -13,6 +13,32 @@ function Set-KeyboardSettings {
     }
 }
 
+function Install-Programs {
+    $Ids = @(
+        "Microsoft.Powershell", 
+        "Neovim.Neovim",
+        "Atuinsh.Atuin",
+        "Zellij.Zellij",
+        "7zip.7zip",
+        "Git.Git",
+        "VideoLAN.VLC",
+        "Deskflow.Deskflow",
+        "Valve.Steam",
+        "WiresharkFoundation.Wireshark",
+        "jeffvli.Feishin",
+        "Discord.Discord",
+        "Fastfetch-cli.Fastfetch",
+        "dbrgn.tealdeer",
+        "sxyazi.yazi",
+        "yt-dlp.yt-dlp",
+        "Python.Python.3.14",
+        "Microsoft.PowerToys",
+        "Microsoft.WSL"
+    )
+
+    & winget install $Ids
+}
+
 function Read-RestartConfirmation {
     Write-Host "Windows setup has completed. Registry changes require a restart."
     $RestartConfirmed = (Read-Host "Would you like to restart now? (y/n)").Trim().ToLower()
@@ -26,6 +52,7 @@ function Read-RestartConfirmation {
 
 function Main {
     Set-KeyboardSettings
+    Install-Programs
     Read-RestartConfirmation
 }
 
