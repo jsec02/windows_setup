@@ -39,6 +39,10 @@ function Install-Programs {
     & winget install $Ids
 }
 
+function Update-Path {
+    $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+}
+
 function Read-RestartConfirmation {
     Write-Host "Windows setup has completed. Registry changes require a restart."
     $RestartConfirmed = (Read-Host "Would you like to restart now? (y/n)").Trim().ToLower()
@@ -53,6 +57,7 @@ function Read-RestartConfirmation {
 function Main {
     Set-KeyboardSettings
     Install-Programs
+    Update-Path
     Read-RestartConfirmation
 }
 
