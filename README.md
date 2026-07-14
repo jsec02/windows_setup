@@ -8,6 +8,12 @@ To bypass the Microsoft account requirement during initial Windows 11 setup, dis
 
 This script assumes a user account is setup and logged in. Additionally, you can run this script with elevated privileges to avoid User Account Control pop-ups. 
 
-```ps1
+```powershell
 Invoke-WebRequest -Uri https://raw.githubusercontent.com/jsec02/windows_setup/master/setup.ps1 | Invoke-Expression
+```
+
+Run this command after reboot to complete WSL setup:
+
+```powershell
+wsl --install archlinux
 ```
