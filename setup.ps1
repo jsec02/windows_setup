@@ -13,8 +13,20 @@ function Set-KeyboardSettings {
     }
 }
 
+function Read-RestartConfirmation {
+    Write-Host "Windows setup has completed. Registry changes require a restart."
+    $RestartConfirmed = (Read-Host "Would you like to restart now? (y/n)").Trim().ToLower()
+
+    if ($RestartConfirmed -eq "y") {
+        Write-Host "Restarting now..."
+        Start-Sleep -Seconds 2
+        Restart-Computer -WhatIf
+    }
+}
+
 function Main {
     Set-KeyboardSettings
+    Read-RestartConfirmation
 }
 
 Main
