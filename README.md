@@ -9,5 +9,5 @@ To bypass the Microsoft account requirement during initial Windows 11 setup, dis
 This script assumes a user account is setup and logged in.
 
 ```ps1
-Invoke-WebRequest https://raw.githubusercontent.com/jsec02/windows_setup/master/setup.ps1 | Invoke-Expression
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/jsec02/windows_setup/master/setup.ps1 | Invoke-Expression
 ```
