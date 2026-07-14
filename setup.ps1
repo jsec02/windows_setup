@@ -43,8 +43,12 @@ function Update-Path {
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 }
 
-function Initialize-Tldr {
+function Initialize-TLDR {
     tldr --update
+}
+
+function Initialize-WSL {
+    wsl --install
 }
 
 function Read-RestartConfirmation {
@@ -62,6 +66,8 @@ function Main {
     Set-KeyboardSettings
     Install-Programs
     Update-Path
+    Initialize-TLDR
+    Initialize-WSL
     Read-RestartConfirmation
 }
 
