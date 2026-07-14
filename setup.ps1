@@ -43,6 +43,10 @@ function Update-Path {
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 }
 
+function Initialize-Tldr {
+    tldr --update
+}
+
 function Read-RestartConfirmation {
     Write-Host "Windows setup has completed. Registry changes require a restart."
     $RestartConfirmed = (Read-Host "Would you like to restart now? (y/n)").Trim().ToLower()
