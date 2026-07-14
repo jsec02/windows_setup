@@ -20,7 +20,7 @@ function Read-RestartConfirmation {
     if ($RestartConfirmed -eq "y") {
         Write-Host "Restarting now..."
         Start-Sleep -Seconds 2
-        Restart-Computer -WhatIf
+        Restart-Computer
     }
 }
 
