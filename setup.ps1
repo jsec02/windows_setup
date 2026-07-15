@@ -2,8 +2,8 @@
 # =                                  SETUP.PS1                                   =
 # ================================================================================
 
-# UCPD Service blocks TaskbarDa registry key creation, forcing Widgets to be active
 function Disable-UCPD {
+    # UCPD Service blocks TaskbarDa registry key creation, forcing Widgets to be active
     Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\UCPD' -Name 'Start' -Value 4
 }
 
