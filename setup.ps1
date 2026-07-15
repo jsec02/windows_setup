@@ -2,6 +2,11 @@
 # =                                  SETUP.PS1                                   =
 # ================================================================================
 
+# UCPD Service blocks TaskbarDa registry key creation, forcing Widgets to be active
+function Disable-UCPD {
+    Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\UCPD' -Name Start -Value 4
+}
+
 function Set-TaskbarSettings {
     $TaskbarKeys = @(
         'TaskbarAl',
@@ -93,6 +98,7 @@ function Install-WSL {
 
 function Invoke-PreRestart {
     Set-ExecutionPolicy RemoteSigned
+    Disable-UCPD
     Set-TaskbarSettings
     Set-DarkMode
     Set-KeyboardSettings
