@@ -92,6 +92,10 @@ function Read-RestartConfirmation {
     }
 }
 
+function Disable-TaskbarWidgets {
+    New-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'TaskbarDa' -PropertyType DWord -Value 0
+}
+
 function Install-WSL {
     wsl --install archlinux
 }
@@ -112,10 +116,6 @@ function Invoke-PreRestart {
 function Invoke-PostRestart {
     Disable-TaskbarWidgets
     Install-WSL
-}
-
-function Disable-TaskbarWidgets {
-    New-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'TaskbarDa' -PropertyType DWord -Value 0
 }
 
 function Main {
