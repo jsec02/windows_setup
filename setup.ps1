@@ -88,7 +88,9 @@ function Read-RestartConfirmation {
 }
 
 function Main {
+    Set-ExecutionPolicy RemoteSigned
     Set-KeyboardSettings
+    Set-TaskbarSettings
     Set-DarkMode
     Install-Programs
     Update-Path
