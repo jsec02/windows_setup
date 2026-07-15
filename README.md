@@ -13,9 +13,3 @@ This is a two part script, requiring a restart. You will be prompted for a resta
 ```powershell
 Invoke-WebRequest -Uri https://raw.githubusercontent.com/jsec02/windows_setup/master/setup.ps1 | Invoke-Expression
 ```
-
-Run this command after reboot to complete WSL setup:
-
-```powershell
-wsl --install archlinux
-```
