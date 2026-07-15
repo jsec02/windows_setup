@@ -6,7 +6,9 @@ To bypass the Microsoft account requirement during initial Windows 11 setup, dis
 
 ### Usage
 
-This script assumes a user account is setup and logged in. Additionally, you can run this script with elevated privileges to avoid User Account Control pop-ups. 
+This script must be run as administrator and assumes a user account is setup and logged in.
+
+This is a two part script, requiring a restart. You will be prompted for a restart partway through.
 
 ```powershell
 Invoke-WebRequest -Uri https://raw.githubusercontent.com/jsec02/windows_setup/master/setup.ps1 | Invoke-Expression
