@@ -84,12 +84,12 @@ function Initialize-TLDR {
 function Set-RunOnce {
     New-ItemProperty `
         -Path 'HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce' `
-        -Name 'Setup' `
+        -Name 'WindowsSetup' `
         -Value 'powershell.exe -Command "Invoke-WebRequest -Uri https://raw.githubusercontent.com/jsec02/windows_setup/master/setup.ps1 | Invoke-Expression"'
 }
 
 function Set-State {
-    New-Item -Path 'HKCU:\Software\Setup'
+    New-Item -Path 'HKLM:\Software\WindowsSetup'
 }
 
 function Confirm-Restart {
@@ -107,7 +107,7 @@ function Install-WSL {
 }
 
 function Remove-State {
-    Remove-Item -Path 'HKCU:\Software\Setup'
+    Remove-Item -Path 'HKLM:\Software\WindowsSetup'
 }
 
 function Start-Setup {
@@ -132,7 +132,7 @@ function Resume-Setup {
 }
 
 function Main {
-    if (Test-Path 'HKCU:\Software\Setup') {
+    if (Test-Path 'HKLM:\Software\WindowsSetup') {
         Resume-Setup
     } else {
         Start-Setup
