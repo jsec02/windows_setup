@@ -66,7 +66,9 @@ function Install-Programs {
         'yt-dlp.yt-dlp'
     )
 
-    & winget install $Ids
+    foreach ($Id in $Ids) {
+        winget install $Id --silent --accept-source-agreements --accept-package-agreements
+    }
 }
 
 function Update-Path {
