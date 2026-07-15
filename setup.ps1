@@ -128,6 +128,7 @@ function Start-Setup {
 function Resume-Setup {
     Disable-TaskbarWidgets
     Install-WSL
+    Remove-State
 }
 
 function Main {
