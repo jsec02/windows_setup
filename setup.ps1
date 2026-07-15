@@ -15,25 +15,28 @@ function Set-KeyboardSettings {
 
 function Install-Programs {
     $Ids = @(
-        "Microsoft.Powershell", 
-        "Neovim.Neovim",
-        "Atuinsh.Atuin",
-        "Zellij.Zellij",
         "7zip.7zip",
-        "Git.Git",
-        "VideoLAN.VLC",
+        "Atuinsh.Atuin",
         "Deskflow.Deskflow",
-        "Valve.Steam",
-        "WiresharkFoundation.Wireshark",
-        "jeffvli.Feishin",
         "Discord.Discord",
         "Fastfetch-cli.Fastfetch",
-        "dbrgn.tealdeer",
-        "sxyazi.yazi",
-        "yt-dlp.yt-dlp",
-        "Python.Python.3.14",
+        "Git.Git",
         "Microsoft.PowerToys",
-        "Microsoft.WSL"
+        "Microsoft.Powershell", 
+        "Microsoft.WSL",
+        "Mozilla.Firefox"
+        "Neovim.Neovim",
+        "Python.Python.3.14",
+        "RazerInc.RazerInstaller.Synapse4",
+        "Valve.Steam",
+        "VideoLAN.VLC",
+        "WiresharkFoundation.Wireshark",
+        "Zellij.Zellij",
+        "dbrgn.tealdeer",
+        "jeffvli.Feishin",
+        "qBittorrent.qBittorrent",
+        "sxyazi.yazi",
+        "yt-dlp.yt-dlp"
     )
 
     & winget install $Ids
