@@ -4,7 +4,7 @@
 
 # UCPD Service blocks TaskbarDa registry key creation, forcing Widgets to be active
 function Disable-UCPD {
-    Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\UCPD' -Name Start -Value 4
+    Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\UCPD' -Name 'Start' -Value 4
 }
 
 function Set-TaskbarSettings {
@@ -110,7 +110,12 @@ function Invoke-PreRestart {
 }
 
 function Invoke-PostRestart {
+    Disable-TaskbarWidgets
     Install-WSL
+}
+
+function Disable-TaskbarWidgets {
+    New-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'TaskbarDa' -PropertyType DWord -Value 0
 }
 
 function Main {
