@@ -82,21 +82,20 @@ function Initialize-TLDR {
 }
 
 function Set-RunOnce {
-    Set-ItemProperty `
+    New-ItemProperty `
         -Path 'HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce' `
         -Name 'Setup' `
         -Value 'powershell.exe -Command "Invoke-WebRequest -Uri https://raw.githubusercontent.com/jsec02/windows_setup/master/setup.ps1 | Invoke-Expression"'
 }
 
-function Read-RestartConfirmation {
-    Write-Host 'PreRestart stage has completed. PostRestart will automatically run after restart.'
-    $RestartConfirmed = (Read-Host 'Would you like to restart now? (y/n)').Trim().ToLower()
+function Set-State {
+    New-Item -Path 'HKCU:\Software\Setup'
+}
 
-    if ($RestartConfirmed -eq 'y') {
-        Write-Host 'Restarting now...'
-        Start-Sleep -Seconds 2
-        Restart-Computer
-    }
+function Confirm-Restart {
+    Write-Host 'PreRestart stage has completed. PostRestart will automatically run after restart.'
+
+    Restart-Computer -Confirm
 }
 
 function Disable-TaskbarWidgets {
@@ -107,7 +106,11 @@ function Install-WSL {
     wsl --install archlinux
 }
 
-function Invoke-PreRestart {
+function Remove-State {
+    Remove-Item -Path 'HKCU:\Software\Setup'
+}
+
+function Start-Setup {
     Set-ExecutionPolicy RemoteSigned
     Disable-UCPD
     Set-TaskbarSettings
@@ -118,22 +121,21 @@ function Invoke-PreRestart {
     Enable-WSL
     Initialize-TLDR
     Set-RunOnce
-    Read-RestartConfirmation
+    Set-State
+    Confirm-Restart
 }
 
-function Invoke-PostRestart {
+function Resume-Setup {
     Disable-TaskbarWidgets
     Install-WSL
 }
 
 function Main {
-    param(
-        [Parameter(Mandatory)]
-        [ValidateSet('PreRestart', 'PostRestart')]
-        [string]$Stage
-    )
-
-    & "Invoke-$Stage"
+    if (Test-Path 'HKCU:\Software\Setup') {
+        Resume-Setup
+    } else {
+        Start-Setup
+    }
 }
 
 Main
