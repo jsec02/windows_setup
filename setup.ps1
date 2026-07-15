@@ -81,8 +81,15 @@ function Initialize-TLDR {
     tldr --update
 }
 
+function Set-RunOnce {
+    Set-ItemProperty `
+        -Path 'HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce' `
+        -Name 'Setup' `
+        -Value 'powershell.exe -Command "Invoke-WebRequest -Uri https://raw.githubusercontent.com/jsec02/windows_setup/master/setup.ps1 | Invoke-Expression"'
+}
+
 function Read-RestartConfirmation {
-    Write-Host 'PreRestart stage has completed. Restart the computer and run PostRestart stage.'
+    Write-Host 'PreRestart stage has completed. PostRestart will automatically run after restart.'
     $RestartConfirmed = (Read-Host 'Would you like to restart now? (y/n)').Trim().ToLower()
 
     if ($RestartConfirmed -eq 'y') {
@@ -110,6 +117,7 @@ function Invoke-PreRestart {
     Update-Path
     Enable-WSL
     Initialize-TLDR
+    Set-RunOnce
     Read-RestartConfirmation
 }
 
@@ -121,14 +129,11 @@ function Invoke-PostRestart {
 function Main {
     param(
         [Parameter(Mandatory)]
+        [ValidateSet('PreRestart', 'PostRestart')]
         [string]$Stage
     )
 
-    if ($Stage -eq 'PreRestart') {
-        Invoke-PreRestart
-    } elseif ($Stage -eq 'PostRestart') {
-        Invoke-PostRestart
-    }
+    & "Invoke-$Stage"
 }
 
 Main
