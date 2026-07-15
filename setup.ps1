@@ -4,12 +4,23 @@
 
 function Set-KeyboardSettings {
     $KeyboardSettings = @{
-        KeyboardDelay = 0
-        KeyboardSpeed = 31
+        "KeyboardDelay" = 0
+        "KeyboardSpeed" = 31
     }
 
     $KeyboardSettings.GetEnumerator() | ForEach-Object {
         Set-ItemProperty -Path 'HKCU:\Control Panel\Keyboard' -Name $_.Key -Value $_.Value
+    }
+}
+
+function Set-DarkMode {
+    $ThemeKeys = @(
+        "AppsUseLightTheme",
+        "SystemUsesLightTheme"
+    )
+
+    foreach ($Key in $ThemeKeys) {
+        Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize' -Name $Key -Value 0
     }
 }
 
@@ -67,6 +78,7 @@ function Read-RestartConfirmation {
 
 function Main {
     Set-KeyboardSettings
+    Set-DarkMode
     Install-Programs
     Update-Path
     Initialize-TLDR
