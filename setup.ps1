@@ -2,17 +2,6 @@
 # =                                  SETUP.PS1                                   =
 # ================================================================================
 
-function Set-KeyboardSettings {
-    $KeyboardSettings = @{
-        'KeyboardDelay' = 0
-        'KeyboardSpeed' = 31
-    }
-
-    $KeyboardSettings.GetEnumerator() | ForEach-Object {
-        Set-ItemProperty -Path 'HKCU:\Control Panel\Keyboard' -Name $_.Key -Value $_.Value
-    }
-}
-
 function Set-TaskbarSettings {
     $TaskbarKeys = @(
         'TaskbarAl',
@@ -32,6 +21,17 @@ function Set-DarkMode {
 
     foreach ($Key in $ThemeKeys) {
         Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize' -Name $Key -Value 0
+    }
+}
+
+function Set-KeyboardSettings {
+    $KeyboardSettings = @{
+        'KeyboardDelay' = 0
+        'KeyboardSpeed' = 31
+    }
+
+    $KeyboardSettings.GetEnumerator() | ForEach-Object {
+        Set-ItemProperty -Path 'HKCU:\Control Panel\Keyboard' -Name $_.Key -Value $_.Value
     }
 }
 
@@ -68,16 +68,16 @@ function Update-Path {
     $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')
 }
 
+function Enable-WSL {
+    wsl --install --no-distribution
+}
+
 function Initialize-TLDR {
     tldr --update
 }
 
-function Initialize-WSL {
-    wsl --install
-}
-
 function Read-RestartConfirmation {
-    Write-Host 'Windows setup has completed. Registry changes require a restart.'
+    Write-Host 'PreRestart stage has completed. Restart the computer and run PostRestart stage.'
     $RestartConfirmed = (Read-Host 'Would you like to restart now? (y/n)').Trim().ToLower()
 
     if ($RestartConfirmed -eq 'y') {
@@ -87,16 +87,37 @@ function Read-RestartConfirmation {
     }
 }
 
-function Main {
+function Install-WSL {
+    wsl --install archlinux
+}
+
+function Invoke-PreRestart {
     Set-ExecutionPolicy RemoteSigned
-    Set-KeyboardSettings
     Set-TaskbarSettings
     Set-DarkMode
+    Set-KeyboardSettings
     Install-Programs
     Update-Path
+    Enable-WSL
     Initialize-TLDR
-    Initialize-WSL
     Read-RestartConfirmation
+}
+
+function Invoke-PostRestart {
+    Install-WSL
+}
+
+function Main {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Stage
+    )
+
+    if ($Stage -eq 'PreRestart') {
+        Invoke-PreRestart
+    } elseif ($Stage -eq 'PostRestart') {
+        Invoke-PostRestart
+    }
 }
 
 Main
