@@ -91,31 +91,7 @@ function Clear-Desktop {
 }
 
 function Install-Programs {
-    $Ids = @(
-        '7zip.7zip',
-        'Atuinsh.Atuin',
-        'Deskflow.Deskflow',
-        'Discord.Discord',
-        'Fastfetch-cli.Fastfetch',
-        'Git.Git',
-        'Microsoft.PowerToys',
-        'Microsoft.Powershell', 
-        'Microsoft.WSL',
-        'Mozilla.Firefox',
-        'Neovim.Neovim',
-        'Python.Python.3.14',
-        'RazerInc.RazerInstaller.Synapse4',
-        'Valve.Steam',
-        'VideoLAN.VLC',
-        'WiresharkFoundation.Wireshark',
-        'Zellij.Zellij',
-        'RiotGames.LeagueOfLegends.NA',
-        'dbrgn.tealdeer',
-        'jeffvli.Feishin',
-        'qBittorrent.qBittorrent',
-        'sxyazi.yazi',
-        'yt-dlp.yt-dlp'
-    )
+    $Ids = (python "$HOME/parsers/inventory.py" packages windows winget)
 
     $InteractiveIds = @(
         'Valve.Steam',
