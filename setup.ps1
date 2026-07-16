@@ -72,6 +72,18 @@ function Disable-EnhancedPointerPrecision {
     }
 }
 
+function Set-Background {
+    $Mapping = @(
+        @{ 'Path' = 'HKCU:\Control Panel\Colors';  'Name' = 'Background';     'Value' = '0 0 0' }
+        @{ 'Path' = 'HKCU:\Control Panel\Desktop'; 'Name' = 'Wallpaper';      'Value' = '' }
+        @{ 'Path' = 'HKCU:\Control Panel\Desktop'; 'Name' = 'WallpaperStyle'; 'Value' = '10' }
+    )
+
+    $Mapping | ForEach-Object {
+        Write-Host $_.Path, $_.Name, $_.Value
+    }
+}
+
 function Clear-Desktop {
     Get-ChildItem 'C:\Users\Public\Desktop' -Force |
         Where-Object {$_.Name -ne 'desktop.ini' } |
@@ -164,6 +176,7 @@ function Start-Setup {
     Set-DarkMode
     Set-KeyboardSettings
     Disable-EnhancedPointerPrecision
+    Set-Background
     Clear-Desktop
     Install-Programs
     Update-Path
