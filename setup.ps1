@@ -3,10 +3,12 @@
 # ================================================================================
 
 function Invoke-MicrosoftActivationScripts {
+    # https://github.com/massgravel/microsoft-activation-scripts
     Invoke-WebRequest -Uri 'https://get.activated.win' | Invoke-Expression
 }
 
 function Invoke-Win11Debloat {
+    # https://github.com/raphire/win11debloat
     & ([scriptblock]::Create((Invoke-RestMethod "https://debloat.raphi.re/")))
 }
 
