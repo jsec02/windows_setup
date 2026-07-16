@@ -2,7 +2,7 @@
 
 ### Bypass Microsoft Account Requirement
 
-To bypass the Microsoft account requirement during initial Windows 11 setup, disconnect from the internet and press `Shift + F10` to open Command Prompt, then enter `start ms-cxh:localonly`.
+To bypass the Microsoft account requirement during initial Windows 11 setup, press `Shift + F10` to open Command Prompt, then enter `start ms-cxh:localonly`.
 
 ### Usage
 
