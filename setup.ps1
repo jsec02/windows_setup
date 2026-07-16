@@ -72,6 +72,12 @@ function Disable-EnhancedPointerPrecision {
     }
 }
 
+function Clear-Desktop {
+    Get-ChildItem 'C:\Users\Public\Desktop' -Force |
+        Where-Object {$_.Name -ne 'desktop.ini' } |
+        Remove-Item -Force
+}
+
 function Install-Programs {
     $Ids = @(
         '7zip.7zip',
@@ -158,6 +164,7 @@ function Start-Setup {
     Set-DarkMode
     Set-KeyboardSettings
     Disable-EnhancedPointerPrecision
+    Clear-Desktop
     Install-Programs
     Update-Path
     Enable-WSL
