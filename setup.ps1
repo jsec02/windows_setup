@@ -18,35 +18,47 @@ function Disable-UCPD {
 }
 
 function Set-TaskbarSettings {
-    $TaskbarKeys = @(
+    $Keys = @(
         'TaskbarAl',
         'ShowTaskViewButton'
     )
 
-    foreach ($Key in $TaskbarKeys) {
+    foreach ($Key in $Keys) {
         Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name $Key -Value 0
     }
 }
 
 function Set-DarkMode {
-    $ThemeKeys = @(
-        "AppsUseLightTheme",
-        "SystemUsesLightTheme"
+    $Keys = @(
+        'AppsUseLightTheme',
+        'SystemUsesLightTheme'
     )
 
-    foreach ($Key in $ThemeKeys) {
+    foreach ($Key in $Keys) {
         Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize' -Name $Key -Value 0
     }
 }
 
 function Set-KeyboardSettings {
-    $KeyboardSettings = @{
+    $Mapping = @{
         'KeyboardDelay' = 0
         'KeyboardSpeed' = 31
     }
 
-    $KeyboardSettings.GetEnumerator() | ForEach-Object {
+    $Mapping.GetEnumerator() | ForEach-Object {
         Set-ItemProperty -Path 'HKCU:\Control Panel\Keyboard' -Name $_.Key -Value $_.Value
+    }
+}
+
+function Disable-EnhancedPointerPrecision {
+    $Keys = @(
+        'MouseSpeed',
+        'MouseThreshold1'
+        'MouseThreshold2'
+    )
+
+    foreach ($Key in $Keys) {
+        Set-ItemProperty -Path 'HKCU:\Control Panel\Mouse' -Name $Key -Value 0
     }
 }
 
@@ -134,6 +146,7 @@ function Start-Setup {
     Set-TaskbarSettings
     Set-DarkMode
     Set-KeyboardSettings
+    Disable-EnhancedPointerPrecision
     Install-Programs
     Update-Path
     Enable-WSL
