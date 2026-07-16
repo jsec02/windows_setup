@@ -6,6 +6,10 @@ function Invoke-MicrosoftActivationScripts {
     Invoke-WebRequest -Uri 'https://get.activated.win' | Invoke-Expression
 }
 
+function Invoke-Win11Debloat {
+    & ([scriptblock]::Create((Invoke-RestMethod "https://debloat.raphi.re/")))
+}
+
 function Disable-UCPD {
     # UCPD Service blocks TaskbarDa registry key creation, forcing Widgets to be active
     Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\UCPD' -Name 'Start' -Value 4
@@ -122,6 +126,8 @@ function Remove-State {
 
 function Start-Setup {
     Set-ExecutionPolicy RemoteSigned
+    Invoke-MicrosoftActivationScripts
+    Invoke-Win11Debloat
     Disable-UCPD
     Set-TaskbarSettings
     Set-DarkMode
