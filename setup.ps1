@@ -80,7 +80,7 @@ function Set-Background {
     )
 
     $Mapping | ForEach-Object {
-        Write-Host $_.Path, $_.Name, $_.Value
+        Set-ItemProperty -Path $_.Path -Name $_.Name -Value $_.Value
     }
 }
 
