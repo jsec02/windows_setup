@@ -51,7 +51,7 @@ function Install-Programs {
         'Microsoft.PowerToys',
         'Microsoft.Powershell', 
         'Microsoft.WSL',
-        'Mozilla.Firefox'
+        'Mozilla.Firefox',
         'Neovim.Neovim',
         'Python.Python.3.14',
         'RazerInc.RazerInstaller.Synapse4',
@@ -66,8 +66,12 @@ function Install-Programs {
         'yt-dlp.yt-dlp'
     )
 
+    # Microsoft.WinGet.Client seems to be more realiable than shelling out to winget.exe in elevated contexts
+    Install-Module Microsoft.WinGet.Client -Scope CurrentUser
+    Import-Module Microsoft.WinGet.Client
+
     foreach ($Id in $Ids) {
-        winget install $Id --silent --accept-source-agreements --accept-package-agreements
+        Install-WinGetPackage -Id $Id
     }
 }
 
