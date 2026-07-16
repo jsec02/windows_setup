@@ -158,6 +158,17 @@ function Disable-TaskbarWidgets {
     New-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'TaskbarDa' -PropertyType DWord -Value 0
 }
 
+function Disable-StartupApps {
+    $Keys = @(
+        'Discord',
+        'Steam'
+    )
+
+    foreach ($Key in $Keys) {
+        Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name $Key
+    }
+}
+
 function Install-WSL {
     wsl --install archlinux
 }
