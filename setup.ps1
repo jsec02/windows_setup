@@ -109,6 +109,7 @@ function Install-Programs {
         'VideoLAN.VLC',
         'WiresharkFoundation.Wireshark',
         'Zellij.Zellij',
+        'RiotGames.LeagueOfLegends.NA',
         'dbrgn.tealdeer',
         'jeffvli.Feishin',
         'qBittorrent.qBittorrent',
@@ -116,12 +117,21 @@ function Install-Programs {
         'yt-dlp.yt-dlp'
     )
 
+    $InteractiveIds = @(
+        'Valve.Steam',
+        'RiotGames.LeagueOfLegends.NA'
+    )
+
     # Microsoft.WinGet.Client seems to be more realiable than shelling out to winget.exe in elevated contexts
     Install-Module Microsoft.WinGet.Client -Scope CurrentUser
     Import-Module Microsoft.WinGet.Client
 
     foreach ($Id in $Ids) {
-        Install-WinGetPackage -Id $Id
+        if ($InteractiveIds -contains $Id) {
+            Install-WinGetPackage -Id $Id -Mode Interactive
+        } else {
+            Install-WinGetPackage -Id $Id
+        }
     }
 }
 
