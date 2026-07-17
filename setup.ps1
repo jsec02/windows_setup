@@ -105,6 +105,12 @@ function Enable-HyperV {
     Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All -NoRestart
 }
 
+function Install-WinGetClient {
+    # Microsoft.WinGet.Client seems to be more realiable than shelling out to winget.exe in elevated contexts
+    Install-Module Microsoft.WinGet.Client -Scope CurrentUser
+    Import-Module Microsoft.WinGet.Client
+}
+
 function Install-Programs {
     $Hostname = $Env:COMPUTERNAME.ToLowerInvariant()
 
@@ -118,10 +124,6 @@ function Install-Programs {
         'Valve.Steam',
         'RiotGames.LeagueOfLegends.NA'
     )
-
-    # Microsoft.WinGet.Client seems to be more realiable than shelling out to winget.exe in elevated contexts
-    Install-Module Microsoft.WinGet.Client -Scope CurrentUser
-    Import-Module Microsoft.WinGet.Client
 
     foreach ($Id in $Ids) {
         if ($InteractiveIds -contains $Id) {
@@ -216,6 +218,7 @@ function Start-Setup {
     Set-Background
     Clear-Desktop
     Enable-HyperV
+    Install-WinGetClient
     Install-Programs
     Update-Path
     Enable-WSL
