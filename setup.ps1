@@ -174,6 +174,24 @@ function Install-WSL {
     wsl --install archlinux
 }
 
+function Initialize-Network {
+    # Create new VM switch bound to the "Wi-Fi" network adapter
+    # This along with networkingMode=bridged and vmSwitch=WSL in $HOME\.wslconfig
+    # are required for bridged mode to function properly
+    New-VMSwitch -Name "WSL" -NetAdapterName "Wi-Fi" -AllowManagementOS $true
+
+    # Upload speed is throttled when the network adapter is in bridged mode
+    # The fix is to disable Large Send Offload V2
+    # https://learn.microsoft.com/en-us/answers/questions/4182017/windows-upload-throttled-when-network-adapter-is-i
+    Disable-NetAdapterLso -Name "Network Bridge"
+
+    # Configure IP address and default gateway
+    New-NetIPAddress -InterfaceAlias "vEthernet (WSL)" -IPAddress 10.0.0.10 -PrefixLength 24 -DefaultGateway 10.0.0.1
+
+    # Configure custom DNS with cloudflare fallback
+    Set-DnsClientServerAddress -InterfaceAlias "vEthernet (WSL)" -ServerAddresses ("10.0.0.30","2607:fea8:28cf:3700:2ecf:67ff:fe13:f06","1.1.1.1","2606:4700:4700::1111")
+}
+
 function Remove-State {
     Remove-Item -Path 'HKLM:\Software\WindowsSetup'
 }
@@ -205,6 +223,7 @@ function Resume-Setup {
     Disable-TaskbarWidgets
     Disable-StartupApps
     Install-WSL
+    Initialize-Network
     Remove-State
 }
 
