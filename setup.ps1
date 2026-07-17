@@ -101,6 +101,10 @@ function Clear-Desktop {
         Remove-Item -Force
 }
 
+function Enable-HyperV {
+    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All -NoRestart
+}
+
 function Install-Programs {
     $Ids = (python "$HOME/parsers/inventory.py" packages windows winget) -split ' '
 
@@ -187,6 +191,7 @@ function Start-Setup {
     Disable-EnhancedPointerPrecision
     Set-Background
     Clear-Desktop
+    Enable-HyperV
     Install-Programs
     Update-Path
     Enable-WSL
