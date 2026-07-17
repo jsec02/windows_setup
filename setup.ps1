@@ -91,7 +91,7 @@ function Clear-Desktop {
 }
 
 function Install-Programs {
-    $Ids = (python "$HOME/parsers/inventory.py" packages windows winget)
+    $Ids = (python "$HOME/parsers/inventory.py" packages windows winget) -split ' '
 
     $InteractiveIds = @(
         'Valve.Steam',
