@@ -27,6 +27,17 @@ function Disable-UCPD {
     Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\UCPD' -Name 'Start' -Value 4
 }
 
+function Set-FileExplorerSettings {
+    $Mapping = @{
+        'Hidden'      = 1
+        'HideFileExt' = 0
+    }
+
+    $Mapping.GetEnumerator() | ForEach-Object {
+        Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name $_.Key -Value $_.Value
+    }
+}
+
 function Set-TaskbarSettings {
     $Keys = @(
         'TaskbarAl',
@@ -169,6 +180,7 @@ function Start-Setup {
     Invoke-Win11Debloat
     Uninstall-OneDrive
     Disable-UCPD
+    Set-FileExplorerSettings
     Set-TaskbarSettings
     Set-DarkMode
     Set-KeyboardSettings
