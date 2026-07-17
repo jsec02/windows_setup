@@ -106,7 +106,13 @@ function Enable-HyperV {
 }
 
 function Install-Programs {
-    $Ids = (python "$HOME/parsers/inventory.py" packages windows winget) -split ' '
+    $Hostname = $Env:COMPUTERNAME.ToLowerInvariant()
+
+    $Ids = (python "$HOME/parsers/inventory.py" packages $Hostname winget) -split ' '
+
+    if ($LASTEXITCODE -ne 0) {
+        throw "Inventory lookup failed"
+    }
 
     $InteractiveIds = @(
         'Valve.Steam',
@@ -227,7 +233,7 @@ function Resume-Setup {
     Remove-State
 }
 
-function Main {
+function Invoke-Main {
     if (Test-Path 'HKLM:\Software\WindowsSetup') {
         Resume-Setup
     } else {
@@ -235,4 +241,4 @@ function Main {
     }
 }
 
-Main
+Invoke-Main
