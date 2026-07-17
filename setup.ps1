@@ -150,7 +150,7 @@ function Set-State {
 }
 
 function Confirm-Restart {
-    Write-Host 'PreRestart stage has completed. PostRestart will automatically run after restart.'
+    Write-Host 'Pre-Restart stage has completed. Post-Restart will automatically run after restart.'
 
     Restart-Computer -Confirm
 }
