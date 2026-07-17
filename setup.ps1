@@ -203,6 +203,7 @@ function Start-Setup {
 
 function Resume-Setup {
     Disable-TaskbarWidgets
+    Disable-StartupApps
     Install-WSL
     Remove-State
 }
