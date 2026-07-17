@@ -205,7 +205,7 @@ function Remove-State {
 }
 
 function Start-Setup {
-    Set-ExecutionPolicy RemoteSigned
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
     Invoke-MicrosoftActivationScripts
     Invoke-Win11Debloat
     Uninstall-OneDrive
