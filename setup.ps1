@@ -111,12 +111,31 @@ function Initialize-WinGetClient {
     Import-Module Microsoft.WinGet.Client
 }
 
+function Install-WinGetPackageWithRetry {
+    param (
+        [Parameter(Mandatory)]
+        [string]$Id,
+
+        [string]$Mode
+    )
+
+    $Parameters = @{ Id = $Id }
+
+    if ($Mode) {
+        $Parameters.Mode = $Mode
+    }
+
+    do {
+        Install-WinGetPackage @Parameters
+    } while (-not $?)
+}
+
 function Initialize-Git {
-    Install-WinGetPackage -Id Git.Git
+    Install-WinGetPackageWithRetry -Id Git.Git
 }
 
 function Initialize-Python {
-    Install-WinGetPackage -Id Python.Python.3.14
+    Install-WinGetPackageWithRetry -Id Python.Python.3.14
 }
 
 function Update-Path {
@@ -135,7 +154,7 @@ function Initialize-Inventory {
     Rename-Item -Path windows_inventory -NewName inventory
 }
 
-function Install-WingetPrograms {
+function Install-WingetPackages {
     param (
         [Parameter(Mandatory=$true)]
         [string]$Hostname
@@ -154,9 +173,9 @@ function Install-WingetPrograms {
 
     foreach ($Id in $Ids) {
         if ($InteractiveIds -contains $Id) {
-            Install-WinGetPackage -Id $Id -Mode Interactive
+            Install-WinGetPackageWithRetry -Id $Id -Mode Interactive
         } else {
-            Install-WinGetPackage -Id $Id
+            Install-WinGetPackageWithRetry -Id $Id
         }
     }
 }
@@ -172,10 +191,10 @@ function Install-PipPackages {
     pip3 install $Packages --break-system-packages
 }
 
-function Install-Programs {
+function Install-Packages {
     $Hostname = $Env:COMPUTERNAME.ToLowerInvariant()
 
-    Install-WingetPrograms -Hostname $Hostname
+    Install-WingetPackages -Hostname $Hostname
     Install-PipPackages -Hostname $Hostname
 }
 
@@ -265,7 +284,7 @@ function Start-Setup {
     Update-Path
     Initialize-Parsers
     Initialize-Inventory
-    Install-Programs
+    Install-Packages
     Update-Path
     Enable-WSL
     Initialize-TLDR
