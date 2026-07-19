@@ -157,10 +157,22 @@ function Install-WingetPrograms {
     }
 }
 
+function Install-PipPackages {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$Hostname
+    )
+
+    $Packages = python "$HOME/parsers/inventory.py" packages $Hostname pip3
+
+    pip3 install $Packages --break-system-packages
+}
+
 function Install-Programs {
     $Hostname = $Env:COMPUTERNAME.ToLowerInvariant()
 
     Install-WingetPrograms -Hostname $Hostname
+    Install-PipPackages -Hostname $Hostname
 }
 
 function Enable-WSL {
