@@ -106,7 +106,6 @@ function Enable-HyperV {
 }
 
 function Initialize-WinGetClient {
-    # Microsoft.WinGet.Client seems to be more realiable than shelling out to winget.exe in elevated contexts
     Install-Module Microsoft.WinGet.Client -Scope CurrentUser
     Import-Module Microsoft.WinGet.Client
 }
@@ -119,6 +118,9 @@ function Install-WinGetPackageWithRetry {
         [string]$Mode
     )
 
+    # For some reason, both winget.exe and Install-WinGetPackage sometimes
+    # fail to install programs in elevated contexts
+
     $Parameters = @{ Id = $Id }
 
     if ($Mode) {
@@ -126,7 +128,7 @@ function Install-WinGetPackageWithRetry {
     }
 
     do {
-        $Result = Install-WinGetPackage @Parameters
+        Install-WinGetPackage @Parameters | Tee-Object -Variable Result
     } while ($Result.Status -ne 'Ok')
 }
 
