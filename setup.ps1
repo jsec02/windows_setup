@@ -105,10 +105,30 @@ function Enable-HyperV {
     Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All -NoRestart
 }
 
-function Install-WinGetClient {
+function Initialize-WinGetClient {
     # Microsoft.WinGet.Client seems to be more realiable than shelling out to winget.exe in elevated contexts
     Install-Module Microsoft.WinGet.Client -Scope CurrentUser
     Import-Module Microsoft.WinGet.Client
+}
+
+function Initialize-Git {
+    Install-WinGetPackage -Id Git.Git
+}
+
+function Initialize-Python {
+    Install-WinGetPackage -Id Python.Python.3.14
+}
+
+function Update-Path {
+    $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')
+}
+
+function Initialize-Inventory {
+    pip install pyyaml --break-system-packages
+
+    git clone https://github.com/jsec02/windows_inventory.git
+
+    Rename-Item -Path windows_inventory -NewName inventory
 }
 
 function Install-Programs {
@@ -132,10 +152,6 @@ function Install-Programs {
             Install-WinGetPackage -Id $Id
         }
     }
-}
-
-function Update-Path {
-    $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')
 }
 
 function Enable-WSL {
@@ -218,7 +234,11 @@ function Start-Setup {
     Set-Background
     Clear-Desktop
     Enable-HyperV
-    Install-WinGetClient
+    Initialize-WinGetClient
+    Initialize-Git
+    Initialize-Python
+    Update-Path
+    Initialize-Inventory
     Install-Programs
     Update-Path
     Enable-WSL
