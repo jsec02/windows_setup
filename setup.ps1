@@ -263,6 +263,7 @@ function Start-Setup {
     Initialize-Git
     Initialize-Python
     Update-Path
+    Initialize-Parsers
     Initialize-Inventory
     Install-Programs
     Update-Path
