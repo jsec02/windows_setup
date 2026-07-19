@@ -200,6 +200,23 @@ function Install-Packages {
     Install-PipPackages -Hostname $Hostname
 }
 
+function Read-Secrets {
+    while ($true) {
+        $Env:RESTIC_REPOSITORY = Read-Host 'Enter Restic repository'
+        $Env:RESTIC_PASSWORD = Read-Host -MaskInput 'Enter Restic password'
+        $Env:B2_ACCOUNT_ID = Read-Host 'Enter B2 account ID'
+        $Env:B2_ACCOUNT_KEY = Read-Host -MaskInput 'Enter B2 account key'
+
+        restic snapshots 2>&1 | Out-Null
+
+        if ($LASTEXITCODE -eq 0) {
+            return
+        }
+
+        Write-Host 'Invalid credentials'
+    }
+}
+
 function Enable-WSL {
     wsl --install --no-distribution
 }
@@ -288,6 +305,7 @@ function Start-Setup {
     Initialize-Inventory
     Install-Packages
     Update-Path
+    Read-Secrets
     Enable-WSL
     Initialize-TLDR
     Set-RunOnce
