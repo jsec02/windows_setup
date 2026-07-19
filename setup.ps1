@@ -126,8 +126,8 @@ function Install-WinGetPackageWithRetry {
     }
 
     do {
-        Install-WinGetPackage @Parameters
-    } while (-not $?)
+        $Result = Install-WinGetPackage @Parameters
+    } while ($Result.Status -ne "Success")
 }
 
 function Initialize-Git {
