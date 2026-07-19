@@ -137,7 +137,7 @@ function Install-WingetPrograms {
         [string]$Hostname
     )
 
-    $Ids = (python "$HOME/parsers/inventory.py" packages $Hostname winget) -split ' '
+    $Ids = (python "$HOME\parsers\inventory.py" packages $Hostname winget) -split ' '
 
     if ($LASTEXITCODE -ne 0) {
         throw "Inventory lookup failed"
@@ -163,7 +163,7 @@ function Install-PipPackages {
         [string]$Hostname
     )
 
-    $Packages = python "$HOME/parsers/inventory.py" packages $Hostname pip3
+    $Packages = python "$HOME\parsers\inventory.py" packages $Hostname pip3
 
     pip3 install $Packages --break-system-packages
 }
