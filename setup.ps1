@@ -131,8 +131,11 @@ function Initialize-Inventory {
     Rename-Item -Path windows_inventory -NewName inventory
 }
 
-function Install-Programs {
-    $Hostname = $Env:COMPUTERNAME.ToLowerInvariant()
+function Install-WingetPrograms {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$Hostname
+    )
 
     $Ids = (python "$HOME/parsers/inventory.py" packages $Hostname winget) -split ' '
 
@@ -152,6 +155,12 @@ function Install-Programs {
             Install-WinGetPackage -Id $Id
         }
     }
+}
+
+function Install-Programs {
+    $Hostname = $Env:COMPUTERNAME.ToLowerInvariant()
+
+    Install-WingetPrograms -Hostname $Hostname
 }
 
 function Enable-WSL {
