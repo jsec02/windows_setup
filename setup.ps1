@@ -123,6 +123,10 @@ function Update-Path {
     $env:Path = [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')
 }
 
+function Initialize-Parsers {
+    git clone https://github.com/jsec02/parsers.git
+}
+
 function Initialize-Inventory {
     pip3 install pyyaml --break-system-packages
 
