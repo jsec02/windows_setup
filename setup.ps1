@@ -124,7 +124,7 @@ function Update-Path {
 }
 
 function Initialize-Inventory {
-    pip install pyyaml --break-system-packages
+    pip3 install pyyaml --break-system-packages
 
     git clone https://github.com/jsec02/windows_inventory.git
 
