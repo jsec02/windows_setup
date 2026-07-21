@@ -217,6 +217,18 @@ function Read-Secrets {
     }
 }
 
+function Restore-FromRestic {
+    $Output = python "$HOME\parsers\inventory.py" tags windows
+
+    foreach ($Line in $Output) {
+        # Ignore $Parts[0], the sudo flag is not needed on windows
+        $Parts = $Line -split ' '
+        $Tag = $Parts[1]
+
+        restic restore latest:/C --host windows --tag $Tag --target C:\
+    }
+}
+
 function Enable-WSL {
     wsl --install --no-distribution
 }
@@ -306,6 +318,7 @@ function Start-Setup {
     Install-Packages
     Update-Path
     Read-Secrets
+    Restore-FromRestic
     Enable-WSL
     Initialize-TLDR
     Set-RunOnce
