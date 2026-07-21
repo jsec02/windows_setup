@@ -229,6 +229,10 @@ function Restore-FromRestic {
     }
 }
 
+function Invoke-Linksync {
+    "$HOME\powershell\scripts\linksync.ps1"
+}
+
 function Enable-WSL {
     wsl --install --no-distribution
 }
@@ -319,6 +323,7 @@ function Start-Setup {
     Update-Path
     Read-Secrets
     Restore-FromRestic
+    Invoke-Linksync
     Enable-WSL
     Initialize-TLDR
     Set-RunOnce
