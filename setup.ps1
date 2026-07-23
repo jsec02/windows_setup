@@ -174,6 +174,8 @@ function Install-WingetPackages {
         throw "Inventory lookup failed"
     }
 
+    # Hardcode games and gaming platforms to use their interactive installers
+    # in order to specify installation location to the isolated Games (D:) drive
     $InteractiveIds = @(
         'Valve.Steam',
         'RiotGames.LeagueOfLegends.NA'
@@ -227,9 +229,10 @@ function Initialize-Restic {
 function Read-Secrets {
     while ($true) {
         $Env:RESTIC_REPOSITORY = Read-Host -Prompt 'Enter Restic repository'
-        $Env:RESTIC_PASSWORD = Read-Host -Prompt 'Enter Restic password' -AsSecureString
+        # Need to do this SecureString dance because -MaskInput does not exist in PowerShell 5.1
+        $Env:RESTIC_PASSWORD = Read-Host -Prompt 'Enter Restic password' -AsSecureString | ConvertFrom-SecureString -AsPlainText
         $Env:B2_ACCOUNT_ID = Read-Host -Prompt 'Enter B2 account ID'
-        $Env:B2_ACCOUNT_KEY = Read-Host -Prompt 'Enter B2 account key' -AsSecureString
+        $Env:B2_ACCOUNT_KEY = Read-Host -Prompt 'Enter B2 account key' -AsSecureString | ConvertFrom-SecureString -AsPlainText
 
         restic snapshots 2>&1 | Out-Null
 
