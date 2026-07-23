@@ -229,10 +229,9 @@ function Initialize-Restic {
 function Read-Secrets {
     while ($true) {
         $Env:RESTIC_REPOSITORY = Read-Host -Prompt 'Enter Restic repository'
-        # Need to do this SecureString dance because -MaskInput does not exist in PowerShell 5.1
-        $Env:RESTIC_PASSWORD = Read-Host -Prompt 'Enter Restic password' -AsSecureString | ConvertFrom-SecureString -AsPlainText
+        $Env:RESTIC_PASSWORD = Read-Host -Prompt 'Enter Restic password'
         $Env:B2_ACCOUNT_ID = Read-Host -Prompt 'Enter B2 account ID'
-        $Env:B2_ACCOUNT_KEY = Read-Host -Prompt 'Enter B2 account key' -AsSecureString | ConvertFrom-SecureString -AsPlainText
+        $Env:B2_ACCOUNT_KEY = Read-Host -Prompt 'Enter B2 account key'
 
         restic snapshots 2>&1 | Out-Null
 
