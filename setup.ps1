@@ -349,6 +349,7 @@ function Start-Setup {
     Read-Secrets
     Restore-FromRestic
     Invoke-Linksync
+    Update-Help
     Enable-WSL
     Initialize-TLDR
     Set-RunOnce
