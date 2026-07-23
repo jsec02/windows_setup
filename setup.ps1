@@ -226,10 +226,10 @@ function Initialize-Restic {
 
 function Read-Secrets {
     while ($true) {
-        $Env:RESTIC_REPOSITORY = Read-Host 'Enter Restic repository'
-        $Env:RESTIC_PASSWORD = Read-Host -MaskInput 'Enter Restic password'
-        $Env:B2_ACCOUNT_ID = Read-Host 'Enter B2 account ID'
-        $Env:B2_ACCOUNT_KEY = Read-Host -MaskInput 'Enter B2 account key'
+        $Env:RESTIC_REPOSITORY = Read-Host -Prompt 'Enter Restic repository'
+        $Env:RESTIC_PASSWORD = Read-Host -Prompt 'Enter Restic password' -AsSecureString
+        $Env:B2_ACCOUNT_ID = Read-Host -Prompt 'Enter B2 account ID'
+        $Env:B2_ACCOUNT_KEY = Read-Host -Prompt 'Enter B2 account key' -AsSecureString
 
         restic snapshots 2>&1 | Out-Null
 
