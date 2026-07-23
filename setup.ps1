@@ -101,10 +101,6 @@ function Clear-Desktop {
         Remove-Item -Force
 }
 
-function Enable-HyperV {
-    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All -NoRestart
-}
-
 function Initialize-WinGetClient {
     Install-Module Microsoft.WinGet.Client -Scope CurrentUser
     Import-Module Microsoft.WinGet.Client
@@ -259,8 +255,13 @@ function Invoke-Linksync {
     "$HOME\powershell\scripts\linksync.ps1"
 }
 
+function Enable-HyperV {
+    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All -NoRestart
+}
+
 function Enable-WSL {
-    wsl --install --no-distribution
+    Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -NoRestart
+    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -NoRestart
 }
 
 function Initialize-TLDR {
@@ -338,7 +339,6 @@ function Start-Setup {
     Disable-EnhancedPointerPrecision
     Set-Background
     Clear-Desktop
-    Enable-HyperV
     Initialize-WinGetClient
     Initialize-Git
     Initialize-Python
@@ -352,6 +352,7 @@ function Start-Setup {
     Restore-FromRestic
     Invoke-Linksync
     Update-Help -ErrorAction SilentlyContinue
+    Enable-HyperV
     Enable-WSL
     Initialize-TLDR
     Set-RunOnce
