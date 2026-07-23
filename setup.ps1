@@ -351,7 +351,7 @@ function Start-Setup {
     Read-Secrets
     Restore-FromRestic
     Invoke-Linksync
-    Update-Help
+    Update-Help -ErrorAction SilentlyContinue
     Enable-WSL
     Initialize-TLDR
     Set-RunOnce
