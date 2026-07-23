@@ -115,7 +115,9 @@ function Install-WinGetPackageWithRetry {
         [Parameter(Mandatory)]
         [string]$Id,
 
-        [string]$Mode
+        [string]$Mode,
+
+        [string]$Version
     )
 
     # For some reason, both winget.exe and Install-WinGetPackage sometimes
@@ -125,6 +127,10 @@ function Install-WinGetPackageWithRetry {
 
     if ($Mode) {
         $Parameters.Mode = $Mode
+    }
+
+    if ($Version) {
+        $Parameters.Version = $Version
     }
 
     do {
@@ -198,6 +204,24 @@ function Install-Packages {
 
     Install-WingetPackages -Hostname $Hostname
     Install-PipPackages -Hostname $Hostname
+}
+
+function Initialize-Restic {
+    # Pin restic to 0.16.4 because it's the latest version avaliable on winget before
+    # https://github.com/restic/restic/pull/4708
+    # This commit introduces a mechanism which backs up SecurityDescriptors of files
+    # This is problematic during restores on new machines because SID's of old local accounts
+    # will never match with that of new local accounts
+    # There exists a remark on the aforementioned commit mentioning that a separate PR can address
+    # the valid use case where one does not want to backup/restore SecurityDescriptors
+    # No such PR has been merged yet
+    # Further dicussion on this topic can be seen here
+    # https://github.com/restic/restic/issues/5257
+
+    # Should this problem get resolved, we can delete this separate Initialize-Restic function,
+    # add restic.restic to inventory.yaml, and remove the version parameter from the
+    # Install-WinGetPackageWithRetry wrapper
+    Install-WinGetPackageWithRetry -Id restic.restic -Version 0.16.4
 }
 
 function Read-Secrets {
@@ -320,6 +344,7 @@ function Start-Setup {
     Initialize-Parsers
     Initialize-Inventory
     Install-Packages
+    Initialize-Restic
     Update-Path
     Read-Secrets
     Restore-FromRestic
