@@ -380,6 +380,12 @@ function Start-StageThree {
 }
 
 function Invoke-Main {
+    # This script requires a minimum 2 restarts. The constraints are as follows:
+    # Install-Packages and Enable-WSL need to be split up or else they begin to hang infinitely
+    # Disable-TaskbarWidgets needs to run following the restart after Disable-UCPD
+    # Disable-StartupApps needs to run following the restart after Install-Packages
+    # Install-WSL needs to run following the restart after Enable-WSL
+
     $StatePath = 'HKLM:\Software\Windows Setup'
 
     if (Test-Path $StatePath) {
