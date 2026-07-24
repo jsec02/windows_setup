@@ -101,41 +101,6 @@ function Clear-Desktop {
         Remove-Item -Force
 }
 
-function Enable-HyperV {
-    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All -NoRestart
-}
-
-function Enable-WSL {
-    Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -NoRestart
-    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -NoRestart
-}
-
-function Set-RunOnce {
-    New-ItemProperty `
-        -Path 'HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce' `
-        -Name 'WindowsSetup' `
-        -Value 'powershell.exe -Command "Invoke-WebRequest -Uri https://raw.githubusercontent.com/jsec02/windows_setup/master/setup.ps1 | Invoke-Expression"'
-}
-
-function Set-State {
-    New-Item -Path 'HKLM:\Software\WindowsSetup'
-}
-
-function Disable-TaskbarWidgets {
-    New-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'TaskbarDa' -PropertyType DWord -Value 0
-}
-
-function Disable-StartupApps {
-    $Keys = @(
-        'Discord',
-        'Steam'
-    )
-
-    foreach ($Key in $Keys) {
-        Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name $Key
-    }
-}
-
 function Initialize-WinGetClient {
     Install-Module Microsoft.WinGet.Client -Scope CurrentUser
     Import-Module Microsoft.WinGet.Client
@@ -294,8 +259,39 @@ function Initialize-TLDR {
     tldr --update
 }
 
-function Install-WSL {
-    wsl --install archlinux
+function Set-RunOnce {
+    New-ItemProperty `
+        -Path 'HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce' `
+        -Name 'WindowsSetup' `
+        -Value 'powershell.exe -Command "Invoke-WebRequest -Uri https://raw.githubusercontent.com/jsec02/windows_setup/master/setup.ps1 | Invoke-Expression"'
+}
+
+function Set-State {
+    New-Item -Path 'HKLM:\Software\WindowsSetup'
+}
+
+function Disable-TaskbarWidgets {
+    New-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'TaskbarDa' -PropertyType DWord -Value 0
+}
+
+function Disable-StartupApps {
+    $Keys = @(
+        'Discord',
+        'Steam'
+    )
+
+    foreach ($Key in $Keys) {
+        Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' -Name $Key
+    }
+}
+
+function Enable-HyperV {
+    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-All -NoRestart
+}
+
+function Enable-WSL {
+    Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -NoRestart
+    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -NoRestart
 }
 
 function Initialize-Network {
@@ -333,16 +329,6 @@ function Start-Setup {
     Disable-EnhancedPointerPrecision
     Set-Background
     Clear-Desktop
-    Enable-HyperV
-    Enable-WSL
-    Set-RunOnce
-    Set-State
-    Restart-Computer -Confirm
-}
-
-function Resume-Setup {
-    Disable-TaskbarWidgets
-    Disable-StartupApps
     Initialize-WinGetClient
     Initialize-Git
     Initialize-Python
@@ -355,9 +341,18 @@ function Resume-Setup {
     Read-Secrets
     Restore-FromRestic
     Invoke-Linksync
-    Initialize-TLDR
     Update-Help -ErrorAction SilentlyContinue
-    Install-WSL
+    Initialize-TLDR
+    Set-RunOnce
+    Set-State
+    Restart-Computer -Confirm
+}
+
+function Resume-Setup {
+    Disable-TaskbarWidgets
+    Disable-StartupApps
+    Enable-HyperV
+    Enable-WSL
     Initialize-Network
     Remove-State
 }
