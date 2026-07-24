@@ -8,7 +8,7 @@ To bypass the Microsoft account requirement during initial Windows 11 setup, pre
 
 This script must be run as administrator and assumes a user account is setup and logged in.
 
-This is a two part script, requiring a restart. You will be prompted for a restart partway through.
+This is a three stage script, requiring two restarts. You will be prompted when it's time to restart.
 
 ```powershell
 Invoke-WebRequest -Uri https://raw.githubusercontent.com/jsec02/windows_setup/master/setup.ps1 | Invoke-Expression
