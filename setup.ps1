@@ -267,7 +267,18 @@ function Set-RunOnce {
 }
 
 function Set-State {
-    New-Item -Path 'HKLM:\Software\WindowsSetup'
+    param(
+        [Parameter(Mandatory)]
+        [int]$Stage
+    )
+
+    $Path = 'HKLM:\Software\Windows Setup'
+
+    if (-not (Test-Path $Path)) {
+        New-Item -Path $Path
+    }
+
+    Set-ItemProperty -Path $Path -Name 'Stage' -Value $Stage
 }
 
 function Disable-TaskbarWidgets {
@@ -294,6 +305,10 @@ function Enable-WSL {
     Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -NoRestart
 }
 
+function Install-WSL {
+    wsl --install archlinux
+}
+
 function Initialize-Network {
     # Create new VM switch bound to the "Wi-Fi" network adapter
     # This along with networkingMode=bridged and vmSwitch=WSL in $HOME\.wslconfig
@@ -313,10 +328,10 @@ function Initialize-Network {
 }
 
 function Remove-State {
-    Remove-Item -Path 'HKLM:\Software\WindowsSetup'
+    Remove-Item -Path 'HKLM:\Software\Windows Setup'
 }
 
-function Start-Setup {
+function Start-StageOne {
     Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
     Invoke-MicrosoftActivationScripts
     Invoke-Win11Debloat
@@ -344,24 +359,38 @@ function Start-Setup {
     Update-Help -ErrorAction SilentlyContinue
     Initialize-TLDR
     Set-RunOnce
-    Set-State
+    Set-State -Stage 2
     Restart-Computer -Confirm
 }
 
-function Resume-Setup {
+function Start-StageTwo {
     Disable-TaskbarWidgets
     Disable-StartupApps
     Enable-HyperV
     Enable-WSL
+    Set-RunOnce
+    Set-State -Stage 3
+    Restart-Computer -Confirm
+}
+
+function Start-StageThree {
+    Install-WSL
     Initialize-Network
     Remove-State
 }
 
 function Invoke-Main {
-    if (Test-Path 'HKLM:\Software\WindowsSetup') {
-        Resume-Setup
+    $StatePath = 'HKLM:\Software\Windows Setup'
+
+    if (Test-Path $StatePath) {
+        $Stage = (Get-ItemProperty -Path $StatePath).Stage
+        if ($Stage -eq 2) {
+            Start-StageTwo
+        } elseif ($Stage -eq 3) {
+            Start-StageThree
+        }
     } else {
-        Start-Setup
+        Start-StageOne
     }
 }
 
