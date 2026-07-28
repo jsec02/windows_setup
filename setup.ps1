@@ -220,6 +220,9 @@ function Initialize-Restic {
     # add restic.restic to inventory.yaml, and remove the version parameter from the
     # Install-WinGetPackageWithRetry wrapper
     Install-WinGetPackageWithRetry -Id restic.restic -Version 0.16.4
+
+    # Microsoft.WinGet.Client does not have a pin cmdlet
+    winget pin add --id restic.restic --version 0.16.4
 }
 
 function Read-Secrets {
