@@ -258,6 +258,10 @@ function Invoke-Linksync {
     "$HOME\powershell\scripts\linksync.ps1"
 }
 
+function Enable-ActiveDirectoryTools {
+    Add-WindowsCapability -Online -Name Rsat.ActiveDirectory.DS-LDS.Tools~~~~0.0.1.0
+}
+
 function Initialize-TLDR {
     tldr --update
 }
@@ -360,6 +364,7 @@ function Start-StageOne {
     Restore-FromRestic
     Invoke-Linksync
     Update-Help -ErrorAction SilentlyContinue
+    Enable-ActiveDirectoryTools
     Initialize-TLDR
     Set-RunOnce
     Set-State -Stage 2
