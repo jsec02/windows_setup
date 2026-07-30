@@ -363,7 +363,6 @@ function Start-StageOne {
     Read-Secrets
     Restore-FromRestic
     Invoke-Linksync
-    Update-Help -ErrorAction SilentlyContinue
     Enable-ActiveDirectoryTools
     Initialize-TLDR
     Set-RunOnce
@@ -383,6 +382,7 @@ function Start-StageTwo {
 
 function Start-StageThree {
     Install-WSL
+    Update-Help -ErrorAction SilentlyContinue
     Initialize-Network
     Remove-State
 }
