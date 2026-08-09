@@ -334,6 +334,10 @@ function Initialize-Network {
     Set-DnsClientServerAddress -InterfaceAlias "vEthernet (WSL)" -ServerAddresses ("10.0.0.30","2607:fea8:28cf:3700:2ecf:67ff:fe13:f06","1.1.1.1","2606:4700:4700::1111")
 }
 
+function Set-FirewallRules {
+    New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH SSH Server' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+}
+
 function Remove-State {
     Remove-Item -Path 'HKLM:\Software\Windows Setup'
 }
@@ -384,6 +388,7 @@ function Start-StageThree {
     Install-WSL
     Update-Help -ErrorAction SilentlyContinue
     Initialize-Network
+    Set-FirewallRules
     Remove-State
 }
 
