@@ -108,7 +108,7 @@ function Initialize-WinGetClient {
 
 function Install-WinGetPackageWithRetry {
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory=$true)]
         [string]$Id,
 
         [string]$Mode,
@@ -275,7 +275,7 @@ function Set-RunOnce {
 
 function Set-State {
     param(
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory=$true)]
         [int]$Stage
     )
 
