@@ -332,6 +332,10 @@ function Initialize-Network {
 
     # Configure custom DNS with cloudflare fallback
     Set-DnsClientServerAddress -InterfaceAlias "vEthernet (WSL)" -ServerAddresses ("10.0.0.30","2607:fea8:28cf:3700:2ecf:67ff:fe13:f06","1.1.1.1","2606:4700:4700::1111")
+
+    # Configure custom NTP with time.windows.com alternative
+    w32tm /config /syncfromflags:manual /manualpeerlist:'10.0.0.30, time.windows.com' /update
+    w32tm /resync /rediscover
 }
 
 function Set-FirewallRules {
