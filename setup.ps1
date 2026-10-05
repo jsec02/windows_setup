@@ -28,13 +28,13 @@ function Disable-UCPD {
 }
 
 function Set-FileExplorerSettings {
-    $Mapping = @{
+    $Parameters = @{
         'Hidden'      = 1
         'HideFileExt' = 0
     }
 
-    $Mapping.GetEnumerator() | ForEach-Object {
-        Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name $_.Key -Value $_.Value
+    foreach ($Parameter in $Parameters.GetEnumerator()) {
+        Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name $Parameter.Key -Value $Parameter.Value
     }
 }
 
@@ -61,13 +61,13 @@ function Set-DarkMode {
 }
 
 function Set-KeyboardSettings {
-    $Mapping = @{
+    $Parameters = @{
         'KeyboardDelay' = 0
         'KeyboardSpeed' = 31
     }
 
-    $Mapping.GetEnumerator() | ForEach-Object {
-        Set-ItemProperty -Path 'HKCU:\Control Panel\Keyboard' -Name $_.Key -Value $_.Value
+    foreach ($Parameter in $Parameters.GetEnumerator()) {
+        Set-ItemProperty -Path 'HKCU:\Control Panel\Keyboard' -Name $Parameter.Key -Value $Parameter.Value
     }
 }
 
@@ -84,14 +84,14 @@ function Disable-EnhancedPointerPrecision {
 }
 
 function Set-Background {
-    $Mapping = @(
+    $Parameters = @(
         @{ 'Path' = 'HKCU:\Control Panel\Colors';  'Name' = 'Background';     'Value' = '0 0 0' }
         @{ 'Path' = 'HKCU:\Control Panel\Desktop'; 'Name' = 'Wallpaper';      'Value' = '' }
         @{ 'Path' = 'HKCU:\Control Panel\Desktop'; 'Name' = 'WallpaperStyle'; 'Value' = '10' }
     )
 
-    $Mapping | ForEach-Object {
-        Set-ItemProperty -Path $_.Path -Name $_.Name -Value $_.Value
+    foreach ($Parameter in $Parameters) {
+        Set-ItemProperty -Path $Parameter.Path -Name $Parameter.Name -Value $Parameter.Value
     }
 }
 
@@ -178,11 +178,13 @@ function Install-WingetPackages {
     )
 
     foreach ($Id in $Ids) {
+        $Parameters = @{Name = $Id}
+
         if ($InteractiveIds -contains $Id) {
-            Install-WinGetPackageWithRetry -Id $Id -Mode Interactive
-        } else {
-            Install-WinGetPackageWithRetry -Id $Id
+            $Parameters['Mode'] = 'Interactive'
         }
+
+        Install-WinGetPackageWithRetry @Parameters
     }
 }
 
@@ -372,6 +374,7 @@ function Start-StageOne {
     Initialize-Parsers
     Initialize-Inventory
     Install-Packages
+    Install-Pester
     Initialize-Restic
     Update-Path
     Read-Secrets
