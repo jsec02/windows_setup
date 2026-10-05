@@ -424,7 +424,7 @@ function Start-StageThree {
 }
 
 function Invoke-Main {
-    # This script requires a minimum 2 restarts. The constraints are as follows:
+    # This script requires a minimum of 2 restarts. The constraints are as follows:
     # Install-Packages and Enable-WSL need to be split up or else they begin to hang infinitely
     # Disable-TaskbarWidgets needs to run after the restart following Disable-UCPD
     # Disable-StartupApps needs to run after the restart following Install-Packages
@@ -435,11 +435,15 @@ function Invoke-Main {
     if (Test-Path $StatePath) {
         $Stage = (Get-ItemProperty -Path $StatePath).Stage
 
-        if ($Stage -eq 2) {
-            Start-StageTwo
-        } elseif ($Stage -eq 3) {
-            Start-StageThree
+        switch ($Stage) {
+            2 {
+                Start-StageTwo
+            }
+            3 {
+                Start-StageThree
+            }
         }
+
     } else {
         Start-StageOne
     }
