@@ -204,6 +204,12 @@ function Install-Packages {
     Install-PipPackages -Hostname $Hostname
 }
 
+function Install-Pester {
+    # The default Pester installation is stuck on version 3.4.0 with no trivial way to uninstall it
+    # We initiate a side-by-side installation in which PowerShell should favor the most recent version
+    Install-Module -Name Pester -Force -SkipPublisherCheck
+}
+
 function Initialize-Restic {
     # Pin restic to 0.16.4 because it's the latest version avaliable on winget before
     # https://github.com/restic/restic/pull/4708
@@ -407,6 +413,7 @@ function Invoke-Main {
 
     if (Test-Path $StatePath) {
         $Stage = (Get-ItemProperty -Path $StatePath).Stage
+
         if ($Stage -eq 2) {
             Start-StageTwo
         } elseif ($Stage -eq 3) {
