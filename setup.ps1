@@ -206,10 +206,28 @@ function Install-Packages {
     Install-PipPackages -Hostname $Hostname
 }
 
-function Install-Pester {
+function Install-Modules {
+    $Hostname = $Env:COMPUTERNAME.ToLowerInvariant()
+
+    $Modules = (python "$HOME\parsers\inventory.py" modules $Hostname) -split ' '
+
     # The default Pester installation is stuck on version 3.4.0 with no trivial way to uninstall it
     # We initiate a side-by-side installation in which PowerShell should favor the most recent version
-    Install-Module -Name Pester -Force -SkipPublisherCheck
+    # To do so we need to use the Force and SkipPublisherCheck flags for the Install-Module cmdlet
+    $SideBySideModules = @(
+        'Pester'
+    )
+
+    foreach ($Module in $Modules) {
+        $Parameters = @{Name = $Module}
+
+        if ($SideBySideModules -contains $Module) {
+            $Parameters['Force'] = $true
+            $Parameters['SkipPublisherCheck'] = $true
+        }
+
+        Install-Module @Parameters
+    }
 }
 
 function Initialize-Restic {
@@ -374,7 +392,7 @@ function Start-StageOne {
     Initialize-Parsers
     Initialize-Inventory
     Install-Packages
-    Install-Pester
+    Install-Modules
     Initialize-Restic
     Update-Path
     Read-Secrets
