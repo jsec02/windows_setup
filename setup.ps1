@@ -136,6 +136,13 @@ function Install-WinGetPackageWithRetry {
 
 function Initialize-Git {
     Install-WinGetPackageWithRetry -Id Git.Git
+
+    # Disable autocrlf at both scopes - Git for Windows' installer defaults
+    # core.autocrlf to true at the system level, which silently converts
+    # LF to CRLF on checkout. Repos using .gitattributes eol=lf fight this
+    # setting, so force it off on every machine before it can cause drift.
+    git config --global core.autocrlf false
+    git config --system core.autocrlf false
 }
 
 function Initialize-Python {
