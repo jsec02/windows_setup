@@ -2,6 +2,8 @@
 # =                                    SETUP                                     =
 # ================================================================================
 
+Set-StrictMode -Version Latest
+
 function Invoke-MicrosoftActivationScripts {
     # https://github.com/massgravel/microsoft-activation-scripts
     Invoke-WebRequest -Uri 'https://get.activated.win' | Invoke-Expression
