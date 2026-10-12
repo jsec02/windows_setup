@@ -289,6 +289,22 @@ function Restore-FromRestic {
     }
 }
 
+function Initialize-Smb {
+    $Path = 'C:\Users\master\share'
+    $Hostname = $Env:COMPUTERNAME
+
+    New-Item -ItemType Directory -Path $Path -Force
+
+    $SmbShareParameters = @{
+        Name        = 'share'
+        Path        = $Path
+        ReadAccess  = "$Hostname\master"
+        Description = 'General-purpose, read-only share'
+    }
+
+    New-SmbShare @SmbShareParameters
+}
+
 function Invoke-Linksync {
     "$HOME\powershell\scripts\linksync.ps1"
 }
@@ -406,6 +422,7 @@ function Start-StageOne {
     Update-Path
     Read-Secrets
     Restore-FromRestic
+    Initialize-Smb
     Invoke-Linksync
     Enable-ActiveDirectoryTools
     Initialize-TLDR
