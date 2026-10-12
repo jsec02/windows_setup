@@ -305,7 +305,7 @@ function Initialize-Smb {
     # smb:(OI)(CI)(RX)  — the dedicated share account: Object Inherit + Container Inherit, Read & Execute
     # SYSTEM:(OI)(CI)(F) — the OS/services account: Object Inherit + Container Inherit, Full Control (needed for backups, services, general manageability)
     # Administrators:(OI)(CI)(F) — local admins: Object Inherit + Container Inherit, Full Control (so admins can still manage this folder without having to take ownership first)
-    icacls $Path /inheritance:r /grant:r "$Name(OI)(CI)(RX)" 'SYSTEM:(OI)(CI)(F)' 'Administrators:(OI)(CI)(F)'
+    icacls $Path /inheritance:r /grant:r "$($Name):(OI)(CI)(RX)" 'SYSTEM:(OI)(CI)(F)' 'Administrators:(OI)(CI)(F)'
 
     $SmbShareParameters = @{
         Name        = $Name
