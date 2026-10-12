@@ -290,19 +290,33 @@ function Restore-FromRestic {
 }
 
 function Initialize-Smb {
-    $Path = 'C:\Users\master\share'
-    $Hostname = $Env:COMPUTERNAME
+    $Name = 'smb'
+    $Path = 'C:\smb'
+
+    if (-not (Get-LocalUser -Name $Name -ErrorAction SilentlyContinue)) {
+        New-LocalUser -Name $Name # Will prompt for password
+    }
 
     New-Item -ItemType Directory -Path $Path -Force
 
+    # Lock down C:\smb so only the dedicated smb account (plus SYSTEM/Administrators) can access it
+    # /inheritance:r — strip inherited access control entries (removes BUILTIN\Users' Read & Execute inherited from C:\)
+    # /grant:r  — replace, rather than add to, any explicit grant already on this path for each listed trustee
+    # smb:(OI)(CI)(RX)  — the dedicated share account: Object Inherit + Container Inherit, Read & Execute
+    # SYSTEM:(OI)(CI)(F) — the OS/services account: Object Inherit + Container Inherit, Full Control (needed for backups, services, general manageability)
+    # Administrators:(OI)(CI)(F) — local admins: Object Inherit + Container Inherit, Full Control (so admins can still manage this folder without having to take ownership first)
+    icacls $Path /inheritance:r /grant:r "$:Name(OI)(CI)(RX)" 'SYSTEM:(OI)(CI)(F)' 'Administrators:(OI)(CI)(F)'
+
     $SmbShareParameters = @{
-        Name        = 'share'
+        Name        = $Name
         Path        = $Path
-        ReadAccess  = "$Hostname\master"
+        FullAccess  = 'Everyone' # Set SMB permissions to open
         Description = 'General-purpose, read-only share'
     }
 
-    New-SmbShare @SmbShareParameters
+    if (-not (Get-SmbShare -Name $Name -ErrorAction SilentlyContinue)) {
+        New-SmbShare @SmbShareParameters
+    }
 }
 
 function Invoke-Linksync {
